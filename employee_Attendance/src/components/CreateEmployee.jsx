@@ -6,11 +6,12 @@ const CreateEmployee = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [department, setDepartment] = useState('');
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createEmployee({ name, email, department });
+        await createEmployee({ name, email, department,password });
         navigate('/');
     };
 
@@ -29,6 +30,10 @@ const CreateEmployee = () => {
                 <div>
                     <label>Department:</label>
                     <input type="text" value={department} onChange={(e) => setDepartment(e.target.value)} required />
+                </div>
+                <div>
+                    <label>Password</label>
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </div>
                 <button type="submit">Create</button>
             </form>
