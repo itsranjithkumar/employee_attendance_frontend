@@ -4,6 +4,7 @@ import EmployeeList from './components/EmployeeList';
 import EmployeeDetail from './components/EmployeeDetail';
 import CreateEmployee from './components/CreateEmployee';
 import Dashboard from './dashboard';
+import NetflixClone from './netflix';
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
                 <Route path="/employees/:id" element={<EmployeeDetail />} />
                 <Route path="/create-employee" element={<CreateEmployee />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/netflix" element={<NetflixClone />} />
             </Routes>
         </Router>
     );
