@@ -33,7 +33,8 @@ export default function RegisterPage() {
         },
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
+        console.log('Registration successful');
         toast({
           title: "Registration Successful",
           description: "You have successfully registered.",
