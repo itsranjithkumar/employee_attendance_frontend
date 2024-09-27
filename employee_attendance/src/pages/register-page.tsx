@@ -6,10 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
 
 export default function RegisterPage() {
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate(); // React Router hook for navigation
@@ -37,6 +37,7 @@ export default function RegisterPage() {
         toast({
           title: "Registration Successful",
           description: "You have successfully registered.",
+          variant: "default", // Or you can leave this out as 'default' is the default variant
         });
         navigate('/login'); // Redirect to login page after successful registration
       } else {
@@ -45,7 +46,7 @@ export default function RegisterPage() {
     } catch (error) {
       toast({
         title: "Registration Failed",
-        description: "There was an error during registration. Please try again.",
+        description: error.response?.data?.message || "There was an error during registration. Please try again.",
         variant: "destructive",
       });
     } finally {
