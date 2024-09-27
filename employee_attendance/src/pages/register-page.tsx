@@ -1,58 +1,55 @@
-'use client'
-
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { toast } from "@/components/ui/use-toast"
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "@/components/ui/use-toast";
 
 export default function RegisterPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate(); // React Router hook for navigation
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setIsLoading(true)
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
 
-    const formData = new FormData(event.currentTarget)
+    const formData = new FormData(event.currentTarget);
     const data = {
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      department: formData.get('department') as string,
-      password: formData.get('password') as string,
-    }
+      name: formData.get('name'),
+      email: formData.get('email'),
+      department: formData.get('department'),
+      password: formData.get('password'),
+    };
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/register', {
-        method: 'POST',
+      const response = await axios.post('http://127.0.0.1:8000/register', data, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
-      })
+      });
 
-      if (response.ok) {
+      if (response.status === 200) {
         toast({
           title: "Registration Successful",
           description: "You have successfully registered.",
-        })
-        router.push('/login') // Redirect to login page after successful registration
+        });
+        navigate('/login'); // Redirect to login page after successful registration
       } else {
-        throw new Error('Registration failed')
+        throw new Error('Registration failed');
       }
     } catch (error) {
       toast({
         title: "Registration Failed",
         description: "There was an error during registration. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -104,5 +101,5 @@ export default function RegisterPage() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
