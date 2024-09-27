@@ -1,20 +1,21 @@
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Link } from 'react-router-dom';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [status, setStatus] = useState('idle')
-  const [message, setMessage] = useState('')
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [status, setStatus] = useState('idle');
+  const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setStatus('loading')
-    setMessage('')
+    e.preventDefault();
+    setStatus('loading');
+    setMessage('');
 
     try {
       const response = await fetch('http://127.0.0.1:8000/login', {
@@ -23,20 +24,20 @@ export default function LoginPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
-      })
+      });
 
       if (response.ok) {
-        setStatus('success')
-        setMessage('Login successful!')
+        setStatus('success');
+        setMessage('Login successful!');
       } else {
-        setStatus('error')
-        setMessage('Login failed. Please check your credentials.')
+        setStatus('error');
+        setMessage('Login failed. Please check your credentials.');
       }
     } catch (error) {
-      setStatus('error')
-      setMessage('An error occurred. Please try again.')
+      setStatus('error');
+      setMessage('An error occurred. Please try again.');
     }
-  }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -70,10 +71,14 @@ export default function LoginPage() {
               />
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={status === 'loading'}>
               {status === 'loading' ? 'Logging in...' : 'Log in'}
             </Button>
+            <div className="text-center">
+              <span>Don't have an account? </span>
+              <Link to="/register" className="text-blue-500 hover:underline">Register here</Link>
+            </div>
           </CardFooter>
         </form>
         {(status === 'success' || status === 'error') && (
@@ -83,5 +88,5 @@ export default function LoginPage() {
         )}
       </Card>
     </div>
-  )
+  );
 }
