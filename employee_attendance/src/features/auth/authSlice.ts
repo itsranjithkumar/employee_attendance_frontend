@@ -19,7 +19,7 @@ export const loginUser = createAsyncThunk(
       const data = await response.json();
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify({ email }));
-      return data;
+      return { token: data.access_token, user: { email } };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -49,9 +49,9 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  user: null,
-  token: null,
-  isAuthenticated: false,
+  user: JSON.parse(localStorage.getItem('user') || 'null'),
+  token: localStorage.getItem('token'),
+  isAuthenticated: !!localStorage.getItem('token'),
   status: 'idle',
   error: null,
 };
@@ -75,8 +75,8 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.token = action.payload.access_token;
-        state.user = { email: action.meta.arg.email };
+        state.token = action.payload.token;
+        state.user = action.payload.user;
         state.isAuthenticated = true;
       })
       .addCase(loginUser.rejected, (state, action) => {

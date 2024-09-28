@@ -1,18 +1,16 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { Navigate } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
 import { Button } from "@/components/ui/button";
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(logout());
+    navigate('/login');
   };
 
   return (

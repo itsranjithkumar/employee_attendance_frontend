@@ -8,14 +8,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from 'react-router-dom';
 import { loginUser } from '../features/auth/authSlice';
-// import { RootState, AppDispatch } from '../app/store';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status, error } = useSelector((state) => state.auth);
+  const { status, error, isAuthenticated } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,6 +23,11 @@ export default function LoginPage() {
       navigate('/home');
     }
   };
+
+  if (isAuthenticated) {
+    navigate('/home');
+    return null;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
