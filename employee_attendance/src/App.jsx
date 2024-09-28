@@ -8,14 +8,16 @@ import RegisterPage from './pages/register-page';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import { Toaster } from "@/components/ui/toaster";
+// import { RootState } from './app/store';
 
 function PrivateRoute({ children }) {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 }
 
 function AppContent() {
   const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
     dispatch(checkAuth());
@@ -27,7 +29,10 @@ function AppContent() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<PrivateRoute><HomePage /></PrivateRoute>} />
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route 
+          path="*" 
+          element={isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} 
+        />
       </Routes>
       <Toaster />
     </Router>
