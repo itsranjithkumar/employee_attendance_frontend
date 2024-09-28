@@ -8,6 +8,7 @@ import RegisterPage from './pages/register-page';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import { Toaster } from "@/components/ui/toaster";
+import NotFound from './pages/NotFound';
 // import { RootState } from './app/store';
 
 function PrivateRoute({ children }) {
@@ -31,7 +32,7 @@ function AppContent() {
         <Route path="/home" element={<PrivateRoute><HomePage /></PrivateRoute>} />
         <Route 
           path="*" 
-          element={isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} 
+         element= {<NotFound/>} 
         />
       </Routes>
       <Toaster />
