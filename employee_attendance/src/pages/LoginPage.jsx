@@ -1,41 +1,27 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from 'react-router-dom';
+import { loginUser } from '../features/auth/authSlice';
+// import { RootState, AppDispatch } from '../app/store';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [status, setStatus] = useState('idle');
-  const [message, setMessage] = useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { status, error } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('loading');
-    setMessage('');
-
-    try {
-      const response = await fetch('http://127.0.0.1:8000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        setStatus('success');
-        setMessage('Login successful!');
-      } else {
-        setStatus('error');
-        setMessage('Login failed. Please check your credentials.');
-      }
-    } catch (error) {
-      setStatus('error');
-      setMessage('An error occurred. Please try again.');
+    const resultAction = await dispatch(loginUser({ email, password }));
+    if (loginUser.fulfilled.match(resultAction)) {
+      navigate('/home');
     }
   };
 
@@ -81,9 +67,9 @@ export default function LoginPage() {
             </div>
           </CardFooter>
         </form>
-        {(status === 'success' || status === 'error') && (
-          <Alert className={`mt-4 ${status === 'success' ? 'bg-green-100' : 'bg-red-100'}`}>
-            <AlertDescription>{message}</AlertDescription>
+        {status === 'failed' && (
+          <Alert className="mt-4 bg-red-100">
+            <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
       </Card>
