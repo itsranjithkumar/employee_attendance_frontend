@@ -18,10 +18,25 @@ export const loginUser = createAsyncThunk(
 
       const data = await response.json();
       localStorage.setItem('token', data.access_token);
+      localStorage.setItem('user', JSON.stringify({ email }));
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
+  }
+);
+
+export const checkAuth = createAsyncThunk(
+  'auth/check',
+  async (_, { rejectWithValue }) => {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+    if (token && user) {
+      return { token, user };
+    }
+
+    return rejectWithValue('No token found');
   }
 );
 
@@ -35,7 +50,7 @@ interface AuthState {
 
 const initialState: AuthState = {
   user: null,
-  token: localStorage.getItem('token'),
+  token: null,
   isAuthenticated: false,
   status: 'idle',
   error: null,
@@ -50,6 +65,7 @@ const authSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
     },
   },
   extraReducers: (builder) => {
@@ -66,6 +82,16 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
+      })
+      .addCase(checkAuth.fulfilled, (state, action) => {
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.isAuthenticated = true;
+      })
+      .addCase(checkAuth.rejected, (state) => {
+        state.token = null;
+        state.user = null;
+        state.isAuthenticated = false;
       });
   },
 });
