@@ -5,29 +5,56 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
 
 
 
 export default function HomePage() {
-  const { user } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+
 
   useEffect(() => {
-    fetchEmployees();
-  }, []);
+    if (token) {
+      fetchEmployees();
+    } else {
+      navigate('/login');
+    }
+  }, [token, navigate]);
 
   const fetchEmployees = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/employees');
+      const response = await fetch('http://127.0.0.1:8000/employees', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Unauthorized: Please log in again');
+        }
         throw new Error('Failed to fetch employees');
       }
       const data = await response.json();
       setEmployees(data);
     } catch (error) {
       console.error('Error fetching employees:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to fetch employees",
+        variant: "destructive",
+      });
+      if (error.message === 'Unauthorized: Please log in again') {
+        handleLogout();
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -35,6 +62,10 @@ export default function HomePage() {
     dispatch(logout());
     navigate('/login');
   };
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto mt-10 p-4">
