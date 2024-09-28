@@ -20,7 +20,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/home');
+      navigate('/');
     }
   }, [isAuthenticated, navigate]);
 
@@ -28,7 +28,7 @@ export default function LoginPage() {
     e.preventDefault();
     const resultAction = await dispatch(loginUser({ email, password }));
     if (loginUser.fulfilled.match(resultAction)) {
-      navigate('/home');
+      navigate('/');
     }
   };
 

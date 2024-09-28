@@ -29,7 +29,7 @@ function AppContent() {
       <Routes>
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+        <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
         <Route 
           path="*" 
          element= {<NotFound/>} 
